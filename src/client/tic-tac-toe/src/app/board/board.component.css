@@ -1,0 +1,39 @@
+main {
+  display: grid;
+  grid-template-columns: 100px 100px 100px;
+  align-items: center;
+  justify-content: center;
+}
+
+app-square {
+  height: 100px;
+  padding: 3px;
+}
+
+.text-align{
+  text-align: center;
+}
+
+button {
+  font-size: 2em !important;
+  border-radius: 20px;
+  background-color: #b80a0a;
+  margin-bottom: 10px;
+  transition-duration: 0.5s;
+}
+
+button:hover{
+  color: rgba(255, 255, 255, 0.78);
+  transition-duration: 0.5s;
+  box-shadow: 10px 10px red;
+  background-color: #d30b0b;
+}
+
+h1, h2 {
+  font-family: "Bradley Hand ITC", ui-serif;
+  color: red;
+  text-shadow: #082525 8px 8px 4px;
+  font-weight: bold;
+}
+
+
