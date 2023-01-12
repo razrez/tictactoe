@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using TicTacToe.API.Hubs;
+using TicTacToe.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton(_ =>
+    new ConcurrentDictionary<string, GameConnection>());
 
 var app = builder.Build();
 

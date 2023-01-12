@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import {RouterOutlet} from "@angular/router";
 import { SquareComponent } from './square/square.component';
 import { BoardComponent } from './board/board.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -12,10 +13,11 @@ import { BoardComponent } from './board/board.component';
     SquareComponent,
     BoardComponent
   ],
-    imports: [
-        BrowserModule,
-        RouterOutlet
-    ],
+  imports: [
+    BrowserModule,
+    RouterOutlet,
+    FormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

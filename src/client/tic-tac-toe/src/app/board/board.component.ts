@@ -1,25 +1,37 @@
 import { Component } from '@angular/core';
+import {TicTacToeService} from "../tic-tac-toe.service";
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css']
+  styleUrls: ['./board.component.css'],
+  providers: [TicTacToeService]
 })
 export class BoardComponent {
 
+  private _countMoves: number = 0;
+
+  tictactoe: TicTacToeService;
   squares: any[] = [];
   xIsNext: boolean = true;
   winner: string | null = null;
-  private _countMoves: number = 0;
+  yourName: string = '';
+
+  get gameIsStarted():boolean {
+    return this.tictactoe.gameIsStarted;
+  }
 
   get countMoves(): number {
     return this._countMoves;
   }
 
-  constructor() {
+  constructor(tictactoe:TicTacToeService) {
+    this.tictactoe = tictactoe;
   }
 
   ngOnInit() {
+    this.tictactoe.startConnection();
+    this.tictactoe.hubConnection.on("getHey", (message) => console.log(message))
     this.newGame();
   }
 
@@ -72,4 +84,9 @@ export class BoardComponent {
     }
     return this._countMoves === 9 ? 'nobody' : null;
   }
+
+  joinGame() {
+
+  }
+
 }
