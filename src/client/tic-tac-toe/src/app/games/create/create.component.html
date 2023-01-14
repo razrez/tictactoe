@@ -1,0 +1,3 @@
+<input class="form-control" gameName="gameName" [(ngModel)]="gameName" placeholder="game name"/>
+<input type="number" class="form-control" minimalGameRating="minimalGameRating" [(ngModel)]="minimalGameRating" placeholder="raiting"/>
+<button [disabled]="!gameName || !(minimalGameRating > 0)" (submit)="createGame()">create</button>

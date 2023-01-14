@@ -38,5 +38,9 @@ export class TicTacToeService {
   public sayHey = (name:string) =>
     this.hubConnection.invoke("Hey", name);
 
+  public createGame (gameName: string, minimalGameRating: number)
+  {
+  }
+
   constructor() { }
 }

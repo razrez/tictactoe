@@ -1,0 +1,19 @@
+<form class="form-singup" #signupForm="ngForm" (ngSubmit)="signup(signupForm)">
+  <div class="container-fluid">
+    <h2 class="form-singup-heading">Sign Up</h2>
+    <div *ngIf="isInvalid" class="alert alert-danger">Invalid username or password</div>
+
+    <input type="email" id="username" name="username"
+           ngModel class="form-control" required placeholder="username" autofocus>
+    <input type="email" id="email" name="email"
+           ngModel class="form-control" required placeholder="email">
+    <input type="password" id="password" name="password" ngModel
+           class="form-control" placeholder="Password" required>
+    <input type="password" id="passwordConfirm" name="passwordConfirm" ngModel
+           class="form-control" placeholder="Confirm Password" required>
+    <button type="submit"
+            *ngIf="signupForm.value.username && signupForm.value.email
+            && signupForm.value.password && signupForm.value.passwordConfirm">sign up</button>
+  </div>
+
+</form>

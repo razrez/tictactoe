@@ -1,0 +1,15 @@
+<h1>Доступные игры</h1>
+
+<input class="form-control" gameName="gameName" [(ngModel)]="gameName" placeholder="game name"/>
+<input type="number" class="form-control" minimalGameRating="minimalGameRating" [(ngModel)]="minimalGameRating" placeholder="raiting"/>
+<button [disabled]="!gameName || !(minimalGameRating > 3)" (click)="addGame()">create</button>
+
+<div class="games-container">
+  <form class="form-singin" #joinForm="ngForm" *ngFor="let game of games; let i = index" (ngSubmit)="joinGame(joinForm)">
+    <div class="container-fluid" style="display: flex; flex-direction: row;">
+      <h4 style="margin-left: 10px; font-weight: bold; color: #0fb763">{{game.gameName}}</h4>
+      <h4 style="margin-left: 10px;">Raiting:{{game.minimalGameRating}}</h4>
+      <button style="margin: 10px" type="submit">Join</button>
+    </div>
+  </form>
+</div>

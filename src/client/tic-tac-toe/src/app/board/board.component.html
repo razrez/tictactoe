@@ -1,7 +1,7 @@
-<form #myForm="ngForm" class="text-align" *ngIf="!gameIsStarted">
+<!--<form #myForm="ngForm" class="text-align" *ngIf="!gameIsStarted">
   <input class="form-control" name="name" [(ngModel)]="yourName" required placeholder="your name"/>
   <button [disabled]="!yourName" (click)="tictactoe.sayHey(yourName)">Find game</button>
-</form>
+</form>-->
 
 <div class="text-align">
   <h1 *ngIf="!winner">Current Player: {{ player }} </h1>

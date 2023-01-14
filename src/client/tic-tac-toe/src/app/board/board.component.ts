@@ -1,37 +1,23 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {TicTacToeService} from "../tic-tac-toe.service";
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
-  providers: [TicTacToeService]
 })
 export class BoardComponent {
 
-  private _countMoves: number = 0;
+  @Input() squares: any[] = [];
+  @Input() xIsNext: boolean = true;
+  @Input() winner: string | null = null;
+  @Input() countMoves: number = 0;
 
-  tictactoe: TicTacToeService;
-  squares: any[] = [];
-  xIsNext: boolean = true;
-  winner: string | null = null;
-  yourName: string = '';
-
-  get gameIsStarted():boolean {
-    return this.tictactoe.gameIsStarted;
-  }
-
-  get countMoves(): number {
-    return this._countMoves;
-  }
-
-  constructor(tictactoe:TicTacToeService) {
-    this.tictactoe = tictactoe;
+  @Input() get player() {
+    return this.xIsNext ? 'X' : 'O';
   }
 
   ngOnInit() {
-    this.tictactoe.startConnection();
-    this.tictactoe.hubConnection.on("getHey", (message) => console.log(message))
     this.newGame();
   }
 
@@ -39,11 +25,7 @@ export class BoardComponent {
     this.squares = Array(9).fill(null);
     this.winner = '';
     this.xIsNext = true;
-    this._countMoves = 0;
-  }
-
-  get player() {
-    return this.xIsNext ? 'X' : 'O';
+    this.countMoves = 0;
   }
 
   makeMove(idx: number) {
@@ -53,7 +35,7 @@ export class BoardComponent {
       if (!this.squares[idx]) {
         this.squares.splice(idx, 1, this.player);
         this.xIsNext = !this.xIsNext;
-        this._countMoves ++;
+        this.countMoves ++;
       }
 
       this.winner = this.calculateWinner();
@@ -82,11 +64,8 @@ export class BoardComponent {
         return this.squares[a];
       }
     }
-    return this._countMoves === 9 ? 'nobody' : null;
+    return this.countMoves === 9 ? 'nobody' : null;
   }
 
-  joinGame() {
-
-  }
 
 }

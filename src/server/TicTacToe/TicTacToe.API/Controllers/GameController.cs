@@ -1,20 +1,21 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TicTacToe.API.Controllers;
 
+[Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/games")]
 public class GameController : ControllerBase
 {
-
-    
     public GameController()
     {
+        
     }
-
-    [HttpGet("api/get")]
+    
+    [HttpGet("all")]
     public IActionResult Get()
     {
-        return Ok();
+        return Ok("какая-то доступная информация");
     }
 }

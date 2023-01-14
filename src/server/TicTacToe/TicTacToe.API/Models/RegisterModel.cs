@@ -1,0 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace TicTacToe.API.Models;
+
+public class RegisterModel
+{
+    [Required(ErrorMessage = "User Name is required")]
+    public string? Username { get; set; }
+
+    [EmailAddress]
+    [Required(ErrorMessage = "Email is required")]
+    public string? Email { get; set; }
+
+    [Required(ErrorMessage = "Password is required")]
+    public string? Password { get; set; }
+    
+    [Required]
+    [Compare("Password", ErrorMessage = "Passwords are not the same")]
+    [DataType(DataType.Password)]
+    public string PasswordConfirm { get; set; }
+}
