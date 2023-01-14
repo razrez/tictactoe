@@ -26,8 +26,9 @@ services:
     build:
       context: client/tic-tac-toe
       dockerfile: Dockerfile
+    restart: always
     ports:
-      - "4200:80"
+      - "4200:4200"
         
         
   server:
