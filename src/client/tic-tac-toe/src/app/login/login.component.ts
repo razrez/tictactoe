@@ -22,7 +22,7 @@ export class LoginComponent {
       'confirmPassword': form.value.confirmPassword,
     };
 
-    this.http.post("https://localhost:5001/api/auth/login", credentials)
+    this.http.post("http://localhost:5001/api/auth/login", credentials)
       .subscribe(response => {
         const token = (<any>response).token;
         localStorage.setItem("jwt", token);

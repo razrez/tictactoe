@@ -1,6 +1,6 @@
-import {Injectable, Input} from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as signalR from '@aspnet/signalr';
-import {HubConnection, HubConnectionBuilder} from "@aspnet/signalr";
+import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@aspnet/signalr';
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +24,11 @@ export class TicTacToeService {
   }
 
   private _hubConnection!: signalR.HubConnection;
-  @Input() private _gameIsStarted = false;
+  private _gameIsStarted = false;
 
   public startConnection = () => {
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:5001/game')
+      .withUrl('http://localhost:5001/game', HttpTransportType.WebSockets)
       .build();
     this._hubConnection.start()
       .then(() => console.log('Connection started'))

@@ -23,7 +23,7 @@ export class SignupComponent {
       'passwordConfirm': form.value.passwordConfirm,
     };
 
-    this.http.post("https://localhost:5001/api/auth/signup", credentials)
+    this.http.post("http://localhost:5001/api/auth/signup", credentials)
       .subscribe(response => {
         const token = (<any>response).token;
         localStorage.setItem("jwt", token);
