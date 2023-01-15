@@ -4,7 +4,7 @@
 </form>-->
 
 <div class="text-align">
-  <h1 *ngIf="!winner">Current Player: {{ player }} </h1>
+  <h1 *ngIf="!winner">Current Player: {{ currentPlayerName() }} </h1>
   <h1 *ngIf="winner">
     {{ winner }} won the game!
   </h1>

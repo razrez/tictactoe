@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
+using TicTacToe.AppCore.Common;
 using TicTacToe.AppCore.Common.DTO;
 using TicTacToe.Infrastructure.Services;
 
@@ -8,12 +9,14 @@ namespace TicTacToe.API.Hubs;
 public class GameHub : Hub
 {
     private readonly IDictionary<string, GameConnection> _gameConnections;
+    private readonly GameStates _gamesStates;
     private readonly GameService _gameService;
 
-    public GameHub(ConcurrentDictionary<string, GameConnection> gameConnections, GameService gameService)
+    public GameHub(ConcurrentDictionary<string, GameConnection> gameConnections, GameService gameService, GameStates gamesStates)
     {
         _gameConnections = gameConnections;
         _gameService = gameService;
+        _gamesStates = gamesStates;
     }
 
     public override async Task OnConnectedAsync()
@@ -28,7 +31,6 @@ public class GameHub : Hub
         {
             _gameConnections.Remove(Context.ConnectionId);
             
-            //real-time message from bot
             await Clients
                 .Group(gameConnection.GameName)
                 .SendAsync("ConnectInfo", "Bot", $"{gameConnection.User} left :(");
@@ -46,6 +48,7 @@ public class GameHub : Hub
         await SendAllGames();
     }
 
+    // leave game room
     public async Task LeaveGame()
     {
         if (_gameConnections.TryGetValue(Context.ConnectionId, out var gameConnection))
@@ -102,8 +105,8 @@ public class GameHub : Hub
     public async Task StartGame (GameConnection playerX)
     {
        // playerX - инициализатор игры(надо сделать по дефолту дисэйблед кнопки хода для всех)
-       
        // players who wait the chance
+       
        var otherPlayers = _gameConnections
            .Values
            .Where(g => g.GameName == playerX.GameName && g.User != playerX.User)
@@ -114,20 +117,31 @@ public class GameHub : Hub
             var game = _gameService.Start(playerX, otherPlayers);
             await Clients
                 .Group(playerX.GameName)
-                .SendAsync("CurrentGame", game);
+                .SendAsync("NewGame", new
+                {
+                    playerX = game.PlayerX, 
+                    playerO = game.PlayerO
+                });
+
+            _gamesStates.States[playerX.GameName] = game;
+            //_gamesStates.Add(playerX.GameName, game);
        }
 
        await Task.CompletedTask;
     }
 
-    public async Task MakeMove(GameMove gameMove)
+    public async Task MakeMove(Game gameState)
     {
         // game move logic
+        _gamesStates.States[gameState.PlayerX.GameName] = gameState;
+        await Clients
+            .Group(gameState.PlayerX.GameName)
+            .SendAsync("SyncGameState", _gamesStates.States[gameState.PlayerX.GameName]);
     }
 
     public async Task RefreshRating()
     {
-        
+        await Task.CompletedTask;
     }
 
     public async Task SendAllGames()

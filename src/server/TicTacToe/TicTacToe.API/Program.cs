@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using TicTacToe.API.Hubs;
+using TicTacToe.AppCore.Common;
 using TicTacToe.AppCore.Common.DTO;
 using TicTacToe.Infrastructure.Persistence;
 
@@ -25,8 +26,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR();
 
-builder.Services.AddSingleton(_ =>
-    new ConcurrentDictionary<string, GameConnection>());
+builder.Services.AddSingleton(_ => new ConcurrentDictionary<string, GameConnection>());
+builder.Services.AddSingleton<GameStates>();
 
 var app = builder.Build();
 

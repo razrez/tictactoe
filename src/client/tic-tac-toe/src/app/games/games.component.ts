@@ -93,9 +93,4 @@ export class GamesComponent {
     }
   }
 
-  async leaveGame(){
-    await this.tictactoe.hubConnection.invoke("LeaveGame");
-    window.location.reload();
-  }
-
 }

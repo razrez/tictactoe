@@ -16,6 +16,25 @@ export class Player {
 
 }
 
+export class Game{
+  playerX: Player | undefined;
+  playerO: Player | undefined;
+  squares: any[] = [];
+  xIsNext: boolean = true;
+  winner: string | undefined | null = null;
+  countMoves: number = 0;
+
+  constructor(playerX: Player | undefined, playerO: Player | undefined, squares: any[],
+              xIsNext: boolean, winner: string | undefined | null, countMoves: number) {
+    this.playerX = playerX;
+    this.playerO = playerO;
+    this.squares = squares;
+    this.xIsNext = xIsNext;
+    this.winner = winner;
+    this.countMoves = countMoves;
+  }
+}
+
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -25,13 +44,13 @@ export class GameComponent {
   private readonly username:string;
 
   tictactoe: TicTacToeService;
-
   youCanMove: boolean = false;
+
   playerX: Player | undefined;
   playerO: Player | undefined;
   squares: any[] = [];
   xIsNext: boolean = true;
-  winner: string | null = null;
+  winner: string | undefined | null = null;
   countMoves: number = 0;
 
   @Input()
@@ -47,8 +66,7 @@ export class GameComponent {
     return this.tictactoe.gameIsStarted;
   }
 
-
-  constructor(tictactoe:TicTacToeService,private jwtHelper: JwtHelperService) {
+  constructor(tictactoe:TicTacToeService, private jwtHelper: JwtHelperService) {
     this.tictactoe = tictactoe;
     this.username = this.jwtHelper.decodeToken()[userKey]
   }
@@ -56,7 +74,7 @@ export class GameComponent {
   ngOnInit() {
     this.newGame();
     this.addStartedGameListener();
-    this.addSyncGameListener()
+    this.addSyncGameListener();
   }
 
   newGame() {
@@ -67,7 +85,7 @@ export class GameComponent {
   }
 
   addStartedGameListener(){
-    this.tictactoe.hubConnection.on("CurrentGame",({playerX, playerO}) =>{
+    this.tictactoe.hubConnection.on("NewGame",({playerX, playerO}) =>{
       this.tictactoe.gameIsStarted = true;
 
       this.playerX = new Player(playerX.user, playerX.gameName, playerX.minimalGameRating);
@@ -80,7 +98,7 @@ export class GameComponent {
           break;
 
         case playerO.user:
-          this.youCanMove = true;
+          this.youCanMove = false; // X - always first
           console.log("you - O")
           break;
 
@@ -89,16 +107,25 @@ export class GameComponent {
       }
 
       console.log(this.playerX, this.playerO);
+      //console.log(this.youCanMove);
+      this.newGame();
     });
   }
 
   addSyncGameListener(){
-    this.tictactoe.hubConnection.on("SyncGameState", (game) => {
+    this.tictactoe.hubConnection.on("SyncGameState", (game:Game) => {
+
+      this.playerX = game.playerX;
+      this.playerO = game.playerO;
+      this.squares = game.squares;
+      this.xIsNext = game.xIsNext;
+      this.winner = game.winner;
+      this.countMoves = game.countMoves;
+
+
+      this.youCanMove = (this.username === this.playerX?.user && this.xIsNext )
+        || (this.username === this.playerO?.user && !this.xIsNext);
       console.log(game);
-
-
-
-
     })
   }
 
