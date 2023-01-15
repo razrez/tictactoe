@@ -15,7 +15,6 @@ import {AuthGuard} from "../auth-guard.service";
 import { GamesComponent } from './games/games.component';
 import { SignupComponent } from './signup/signup.component';
 import { GameComponent } from './games/game/game.component';
-import { CreateComponent } from './games/create/create.component';
 
 export function tokenGetter(){
   return localStorage.getItem("jwt");
@@ -33,7 +32,6 @@ export const userKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/na
     GamesComponent,
     SignupComponent,
     GameComponent,
-    CreateComponent
   ],
   imports: [
     BrowserModule,

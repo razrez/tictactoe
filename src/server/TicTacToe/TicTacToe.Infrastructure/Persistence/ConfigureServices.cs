@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using TicTacToe.Domain.Entities;
+using TicTacToe.Infrastructure.Services;
 
 namespace TicTacToe.Infrastructure.Persistence;
 
@@ -54,6 +55,8 @@ public static class ConfigureServices
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
                 };
             });
+        
+        services.AddScoped<GameService>();
         
         return services;
     }

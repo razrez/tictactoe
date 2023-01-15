@@ -1,3 +1,4 @@
-<h1 style="text-align: center; color: #13ee79">Game "{{gameName}}"</h1>
-<h1 style="text-align: center; color: #13ee79">Raiting:{{minimalGameRating}}</h1>
-<app-board [squares]="squares" [xIsNext]="xIsNext" [winner]="winner" [countMoves]="countMoves"></app-board>
+<button *ngIf="tictactoe.gameIsOpened" (click)="leaveGame()" class="leave-btn"> LEAVE</button>
+<h5>Game "{{gameName}}"  Raiting:{{minimalGameRating}}</h5>
+<app-board *ngIf="gameIsStarted" [squares]="squares" [xIsNext]="xIsNext" [winner]="winner" [countMoves]="countMoves"></app-board>
+<button *ngIf="!gameIsStarted" (click)="startGame()">Start Game</button>

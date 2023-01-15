@@ -1,18 +1,19 @@
 using System.Collections.Concurrent;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.AppCore.Common.DTO;
-using TicTacToe.Domain.Entities;
+using TicTacToe.Infrastructure.Services;
 
 namespace TicTacToe.API.Hubs;
 
 public class GameHub : Hub
 {
     private readonly IDictionary<string, GameConnection> _gameConnections;
+    private readonly GameService _gameService;
 
-    public GameHub(ConcurrentDictionary<string, GameConnection> gameConnections)
+    public GameHub(ConcurrentDictionary<string, GameConnection> gameConnections, GameService gameService)
     {
         _gameConnections = gameConnections;
+        _gameService = gameService;
     }
 
     public override async Task OnConnectedAsync()
@@ -89,9 +90,25 @@ public class GameHub : Hub
             .SendAsync("IsConnectedToGame", true);
     }
     
-    public async Task StartGame (GameConnection gameConnection)
+    public async Task StartGame (GameConnection playerX)
     {
        // game start logic
+       // playerX - инициализатор игры(надо сделать по дефолту дисэйблед кнопки хода для всех)
+       
+       var otherPlayers = _gameConnections
+           .Values
+           .Where(g => g.GameName == playerX.GameName && g.User != playerX.User)
+           .ToList();
+
+       if (otherPlayers.Any())
+       {
+            var game = _gameService.Start(playerX, otherPlayers);
+            await Clients
+                .Group(playerX.GameName)
+                .SendAsync("CurrentGame", game);
+       }
+
+       await Task.CompletedTask;
     }
 
     public async Task MakeMove(GameMove gameMove)

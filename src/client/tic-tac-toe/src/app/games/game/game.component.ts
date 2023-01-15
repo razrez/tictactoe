@@ -1,5 +1,20 @@
 import {Component, Input} from '@angular/core';
 import {TicTacToeService} from "../../tic-tac-toe.service";
+import {JwtHelperService} from "@auth0/angular-jwt";
+import {userKey} from "../../app.module";
+
+class Player {
+  user: string = '';
+  gameName: string = '';
+  minimalGameRating!: number;
+
+  constructor(user: string, gameName: string, minimalGameRating: number ) {
+    this.user = user;
+    this.gameName = gameName;
+    this.minimalGameRating = minimalGameRating;
+  }
+
+}
 
 @Component({
   selector: 'app-game',
@@ -7,7 +22,14 @@ import {TicTacToeService} from "../../tic-tac-toe.service";
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+  private readonly username:string;
   private _countMoves: number = 0;
+
+  youCanMove: boolean = false;
+  yourValue: string = '';
+
+  playerX: Player | undefined ;
+  playerO: Player | undefined ;
 
   tictactoe: TicTacToeService;
   squares: any[] = [];
@@ -31,12 +53,14 @@ export class GameComponent {
     return this._countMoves;
   }
 
-  constructor(tictactoe:TicTacToeService) {
+  constructor(tictactoe:TicTacToeService,private jwtHelper: JwtHelperService) {
     this.tictactoe = tictactoe;
+    this.username = this.jwtHelper.decodeToken()[userKey]
   }
 
   ngOnInit() {
     this.newGame();
+    this.addStartedGameListener();
   }
 
   newGame() {
@@ -52,7 +76,7 @@ export class GameComponent {
 
   makeMove(idx: number) {
     // if empty or null
-    if (!this.winner){
+    if (!this.winner && this.youCanMove){
 
       if (!this.squares[idx]) {
         this.squares.splice(idx, 1, this.player);
@@ -89,4 +113,43 @@ export class GameComponent {
     return this._countMoves === 9 ? 'nobody' : null;
   }
 
+  addStartedGameListener(){
+    this.tictactoe.hubConnection.on("CurrentGame",({playerX, playerO}) =>{
+      this.tictactoe.gameIsStarted = true;
+
+      this.playerO = new Player(playerX.user, playerO.gameName, playerO.minimalGameRating);
+      this.playerX = new Player(playerX.user, playerX.gameName, playerX.minimalGameRating);
+
+      switch (this.username) {
+        case playerX.user:
+          this.youCanMove = true;
+          this.yourValue = "X";
+          console.log("you - X")
+          break;
+
+        case playerO.user:
+          this.youCanMove = true;
+          this.yourValue = "O";
+          console.log("you - O")
+          break;
+
+        default:
+          console.log("u just watch")
+      }
+
+      console.log(this.playerX, this.playerO);
+    });
+  }
+
+  async leaveGame(){
+    await this.tictactoe.hubConnection.invoke("LeaveGame");
+    window.location.reload();
+  }
+
+  async startGame(){
+    await this.tictactoe.hubConnection.invoke("StartGame", {
+      user: this.username,
+      gameName: this.gameName,
+      minimalGameRating: this.minimalGameRating});
+  }
 }

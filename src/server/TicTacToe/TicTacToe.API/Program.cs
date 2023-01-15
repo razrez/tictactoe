@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", builder => builder
+    options.AddPolicy("CorsPolicy", policyBuilder => policyBuilder
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()

@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {TicTacToeService} from "../tic-tac-toe.service";
 
 @Component({
   selector: 'app-board',

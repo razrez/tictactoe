@@ -1,0 +1,22 @@
+
+button {
+  font-size: 1em !important;
+  border-radius: 20px;
+  background-color: #b80a0a;
+  margin-bottom: 10px;
+  transition-duration: 0.5s;
+}
+
+button:hover{
+  color: rgba(255, 255, 255, 0.78);
+  transition-duration: 0.5s;
+  box-shadow: 10px 10px red;
+  background-color: #d30b0b;
+}
+
+h5{
+  text-align: center;
+  color: #13ee79;
+  padding-bottom: 0;
+  padding-top: 0;
+}

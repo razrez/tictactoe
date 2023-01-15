@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Common\Interfaces" />
       <Folder Include="Extentions" />
       <Folder Include="Services" />
     </ItemGroup>
