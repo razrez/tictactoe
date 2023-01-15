@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Input} from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@aspnet/signalr';
 
@@ -7,6 +7,7 @@ import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@aspnet/si
 })
 
 export class TicTacToeService {
+
   get hubConnection(): HubConnection {
     return this._hubConnection;
   }
@@ -15,16 +16,9 @@ export class TicTacToeService {
     this._hubConnection = value;
   }
 
-  get gameIsStarted(): boolean {
-    return this._gameIsStarted;
-  }
-
-  set gameIsStarted(value: boolean) {
-    this._gameIsStarted = value;
-  }
-
   private _hubConnection!: signalR.HubConnection;
-  private _gameIsStarted = false;
+  @Input() gameIsStarted = false;
+  @Input() gameIsOpened = false;
 
   public startConnection = () => {
     this._hubConnection = new HubConnectionBuilder()
@@ -35,12 +29,19 @@ export class TicTacToeService {
       .catch(err => console.log(err));
   }
 
+  public closeConnection = async () => {
+    try {
+      await this._hubConnection.stop()
+    }
+
+    catch (e) {
+      console.log(e);
+    }
+  }
+
   public sayHey = (name:string) =>
     this.hubConnection.invoke("Hey", name);
 
-  public createGame (gameName: string, minimalGameRating: number)
-  {
-  }
 
   constructor() { }
 }

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {TicTacToeService} from "../tic-tac-toe.service";
-import {NgForm} from "@angular/forms";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {userKey} from "../app.module";
 import {Router} from "@angular/router";
@@ -12,18 +11,16 @@ import {Router} from "@angular/router";
   styleUrls: ['./games.component.css']
 })
 export class GamesComponent {
+
+  private readonly username:string;
   tictactoe: TicTacToeService;
 
   gameName: string = '';
   minimalGameRating: number = 0;
+  gameIsOpened: boolean = false;
+  gamePlayers: any[] = [];
+  games: any[] = [];
 
-  games: any[] = [/*
-    {gameName:"game1", minimalGameRating:1},
-    {gameName:"game2", minimalGameRating:2},
-    {gameName:"game3", minimalGameRating:3},*/
-  ];
-
-  private readonly username:string;
 
   constructor(private http: HttpClient,tictactoe:TicTacToeService,
               private jwtHelper: JwtHelperService, private router:Router) {
@@ -34,6 +31,12 @@ export class GamesComponent {
   ngOnInit(){
     this.tictactoe.startConnection();
 
+    this.tictactoe.hubConnection.onclose(_ => {
+      this.tictactoe.gameIsOpened = false;
+      this.gameIsOpened = false;
+    });
+
+
     this.tictactoe.hubConnection.on("GetAllGames", (games) => {
       this.games = games;
     });
@@ -42,10 +45,22 @@ export class GamesComponent {
       this.games.push(newGame);
     });
 
+    this.tictactoe.hubConnection.on("ConnectInfo", (bot,connectInfo) => {
+      console.log(bot + ":", connectInfo);
+    });
+
+    // wait if connection to game changes
+    this.tictactoe.hubConnection.on("IsConnectedToGame",
+      (isConnected) => {
+        this.tictactoe.gameIsOpened = isConnected;
+        this.gameIsOpened = isConnected;
+      });
+
+    // needs to monitor in real-time list of connected players to the game
     this.tictactoe.hubConnection.on("GetConnectedPlayers", (connectedPlayers) => {
       console.log(connectedPlayers);
-    })
-
+      this.gamePlayers = connectedPlayers;
+    });
 
     /*this.http.get("https://localhost:5001/api/games/all")
       .subscribe(response => {
@@ -53,25 +68,34 @@ export class GamesComponent {
       }, error => console.log(error))*/
   }
 
-  addGame(){
-    this.tictactoe.hubConnection.invoke("AddGame", {
+  async addGame(){
+    await this.tictactoe.hubConnection.invoke("AddGame", {
       user: this.username,
       gameName: this.gameName,
       minimalGameRating: this.minimalGameRating});
-
-    this.router.navigate(["/game"])
   }
 
-  joinGame(joinForm: NgForm){
+  async joinGame(gameName: string, minimalGameRating: number){
+    if(!this.tictactoe.gameIsOpened){
+      this.gameName = gameName;
+      this.minimalGameRating = minimalGameRating;
 
-    localStorage.setItem("currentGame", this.gameName)
-    /*this.tictactoe.hubConnection.invoke("JoinGame", {
-      user: this.username,
-      gameName: this.gameName,
-      minimalGameRating: this.minimalGameRating});*/
+      await this.tictactoe.hubConnection.invoke("JoinGame", {
+        user: this.username,
+        gameName: gameName,
+        minimalGameRating: minimalGameRating
+      });
+    }
 
-    this.router.navigate(["/game"])
+    else{
+      alert("page will reload");
+      window.location.reload();
+    }
   }
 
+  async leaveGame(){
+    await this.tictactoe.hubConnection.invoke("LeaveGame");
+    window.location.reload();
+  }
 
 }

@@ -45,7 +45,6 @@ export const userKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/na
       {path: 'login', component: LoginComponent},
       {path: 'signup', component: SignupComponent},
       {path: 'games', component: GamesComponent, canActivate: [AuthGuard]},
-      {path: 'game', component: GameComponent, canActivate: [AuthGuard]},
     ]),
     JwtModule.forRoot({
       config:{

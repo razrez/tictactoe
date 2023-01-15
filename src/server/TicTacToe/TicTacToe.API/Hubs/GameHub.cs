@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.AppCore.Common.DTO;
 using TicTacToe.Domain.Entities;
@@ -7,7 +8,7 @@ namespace TicTacToe.API.Hubs;
 
 public class GameHub : Hub
 {
-    private readonly ConcurrentDictionary<string, GameConnection> _gameConnections;
+    private readonly IDictionary<string, GameConnection> _gameConnections;
 
     public GameHub(ConcurrentDictionary<string, GameConnection> gameConnections)
     {
@@ -20,6 +21,45 @@ public class GameHub : Hub
         await base.OnConnectedAsync();
     }
 
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        if (_gameConnections.TryGetValue(Context.ConnectionId, out var gameConnection))
+        {
+            _gameConnections.Remove(Context.ConnectionId);
+            
+            //real-time message from bot
+            await Clients
+                .Group(gameConnection.GameName)
+                .SendAsync("ConnectInfo", "Bot", $"{gameConnection.User} left :(");
+            
+            await SendConnectedPlayers(gameConnection.GameName);
+            await Clients.Caller
+                .SendAsync("IsConnectedToGame", false);
+        }
+        
+        await base.OnDisconnectedAsync(exception);
+        await SendAllGames();
+    }
+
+    public async Task LeaveGame()
+    {
+        if (_gameConnections.TryGetValue(Context.ConnectionId, out var gameConnection))
+        {
+            _gameConnections.Remove(Context.ConnectionId);
+            
+            //real-time message from bot
+            await Clients
+                .Group(gameConnection.GameName)
+                .SendAsync("ConnectInfo", "Bot", $"{gameConnection.User} left :(");
+            
+            await SendConnectedPlayers(gameConnection.GameName);
+            await Clients.Caller
+                .SendAsync("IsConnectedToGame", false);
+        }
+        
+        await SendAllGames();
+    }
+
     public async Task AddGame(GameConnection gameConnection)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, gameConnection.GameName);
@@ -28,7 +68,10 @@ public class GameHub : Hub
         //real-time message from bot
         await Clients.All
             .SendAsync("NewGame", gameConnection);
-
+        
+        await SendConnectedPlayers(gameConnection.GameName);
+        await Clients.Caller
+            .SendAsync("IsConnectedToGame", true);
     }
     
     public async Task JoinGame(GameConnection gameConnection)
@@ -39,9 +82,11 @@ public class GameHub : Hub
         //real-time message from bot
         await Clients
             .Group(gameConnection.GameName)
-            .SendAsync("ReceiveMessage", "Bot", $"{gameConnection.User} here!");
+            .SendAsync("ConnectInfo", "Bot", $"{gameConnection.User} here!");
 
         await SendConnectedPlayers(gameConnection.GameName);
+        await Clients.Caller
+            .SendAsync("IsConnectedToGame", true);
     }
     
     public async Task StartGame (GameConnection gameConnection)
@@ -59,10 +104,6 @@ public class GameHub : Hub
         
     }
 
-    public async Task Hey(string name)
-    {
-        await Clients.All.SendAsync("getHey", $"{name} says hey");
-    }
     public async Task SendAllGames()
     {
         // send only uniq Games

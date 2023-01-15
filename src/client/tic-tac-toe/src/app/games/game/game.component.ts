@@ -21,7 +21,7 @@ export class GameComponent {
   minimalGameRating!: number;
 
   @Input()
-  isOpened: boolean = false;
+  gamePlayers: any[] = [];
 
   get gameIsStarted():boolean {
     return this.tictactoe.gameIsStarted;
@@ -36,8 +36,6 @@ export class GameComponent {
   }
 
   ngOnInit() {
-    this.tictactoe.startConnection();
-    this.tictactoe.hubConnection.on("getHey", (message) => console.log(message))
     this.newGame();
   }
 
@@ -91,7 +89,4 @@ export class GameComponent {
     return this._countMoves === 9 ? 'nobody' : null;
   }
 
-  joinGame() {
-
-  }
 }
