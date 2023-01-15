@@ -1,4 +1,7 @@
 <button *ngIf="tictactoe.gameIsOpened" (click)="leaveGame()" class="leave-btn"> LEAVE</button>
 <h5>Game "{{gameName}}"  Raiting:{{minimalGameRating}}</h5>
-<app-board *ngIf="gameIsStarted" [squares]="squares" [xIsNext]="xIsNext" [winner]="winner" [countMoves]="countMoves"></app-board>
+<app-board *ngIf="gameIsStarted" [playerX]="playerX"
+           [playerO]="playerO" [youCanMove]="youCanMove" [squares]="squares"
+           [xIsNext]="xIsNext" [winner]="winner"
+           [countMoves]="countMoves"></app-board>
 <button *ngIf="!gameIsStarted" (click)="startGame()">Start Game</button>

@@ -36,6 +36,10 @@ public class GameHub : Hub
             await SendConnectedPlayers(gameConnection.GameName);
             await Clients.Caller
                 .SendAsync("IsConnectedToGame", false);
+            
+            await SyncAllGames(gameConnection.GameName);
+            
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameConnection.GameName);
         }
         
         await base.OnDisconnectedAsync(exception);
@@ -56,6 +60,10 @@ public class GameHub : Hub
             await SendConnectedPlayers(gameConnection.GameName);
             await Clients.Caller
                 .SendAsync("IsConnectedToGame", false);
+            
+            await SyncAllGames(gameConnection.GameName);
+            
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameConnection.GameName);
         }
         
         await SendAllGames();
@@ -90,11 +98,12 @@ public class GameHub : Hub
             .SendAsync("IsConnectedToGame", true);
     }
     
+    // game start logic
     public async Task StartGame (GameConnection playerX)
     {
-       // game start logic
        // playerX - инициализатор игры(надо сделать по дефолту дисэйблед кнопки хода для всех)
        
+       // players who wait the chance
        var otherPlayers = _gameConnections
            .Values
            .Where(g => g.GameName == playerX.GameName && g.User != playerX.User)
@@ -126,6 +135,19 @@ public class GameHub : Hub
         // send only uniq Games
         var games = _gameConnections.Values.DistinctBy(d => d.GameName);
         await Clients.Caller.SendAsync("GetAllGames", games);
+    }
+
+    // if it was last connected player
+    public async Task SyncAllGames(string gameName)
+    {
+        // if it was the last player in the game room - sync the games
+        var connectedPlayersNumber = _gameConnections.Values
+            .Count(g => g.GameName == gameName);
+        if (connectedPlayersNumber == 0)
+        {
+            var games = _gameConnections.Values.DistinctBy(d => d.GameName);
+            await Clients.All.SendAsync("GetAllGames", games);
+        }
     }
 
     public Task SendConnectedPlayers(string gameName)

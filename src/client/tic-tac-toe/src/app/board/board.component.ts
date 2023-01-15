@@ -1,4 +1,6 @@
 import {Component, Input} from '@angular/core';
+import {TicTacToeService} from "../tic-tac-toe.service";
+import {Player} from "../games/game/game.component";
 
 @Component({
   selector: 'app-board',
@@ -7,13 +9,23 @@ import {Component, Input} from '@angular/core';
 })
 export class BoardComponent {
 
+  tictactoe: TicTacToeService;
+
+  @Input() playerX: Player | undefined;
+  @Input() playerO: Player | undefined;
+  @Input() youCanMove: boolean = false;
   @Input() squares: any[] = [];
   @Input() xIsNext: boolean = true;
   @Input() winner: string | null = null;
   @Input() countMoves: number = 0;
 
-  @Input() get player() {
+  get player() {
     return this.xIsNext ? 'X' : 'O';
+  }
+
+
+  constructor(tictactoe:TicTacToeService) {
+    this.tictactoe = tictactoe;
   }
 
   ngOnInit() {
@@ -25,11 +37,13 @@ export class BoardComponent {
     this.winner = '';
     this.xIsNext = true;
     this.countMoves = 0;
+
+    //this.tictactoe.hubConnection.invoke("NewGame");
   }
 
-  makeMove(idx: number) {
-    // if empty or null
-    if (!this.winner){
+  async makeMove(idx: number) {
+    // if no winner and you can't do moves
+    if (!this.winner && this.youCanMove){
 
       if (!this.squares[idx]) {
         this.squares.splice(idx, 1, this.player);
@@ -38,6 +52,8 @@ export class BoardComponent {
       }
 
       this.winner = this.calculateWinner();
+
+      //await this.tictactoe.hubConnection.invoke("MakeMove", move);
     }
   }
 

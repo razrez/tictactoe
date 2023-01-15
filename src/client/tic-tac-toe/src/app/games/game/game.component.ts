@@ -3,7 +3,7 @@ import {TicTacToeService} from "../../tic-tac-toe.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {userKey} from "../../app.module";
 
-class Player {
+export class Player {
   user: string = '';
   gameName: string = '';
   minimalGameRating!: number;
@@ -23,18 +23,16 @@ class Player {
 })
 export class GameComponent {
   private readonly username:string;
-  private _countMoves: number = 0;
-
-  youCanMove: boolean = false;
-  yourValue: string = '';
-
-  playerX: Player | undefined ;
-  playerO: Player | undefined ;
 
   tictactoe: TicTacToeService;
+
+  youCanMove: boolean = false;
+  playerX: Player | undefined;
+  playerO: Player | undefined;
   squares: any[] = [];
   xIsNext: boolean = true;
   winner: string | null = null;
+  countMoves: number = 0;
 
   @Input()
   gameName: string = '';
@@ -49,9 +47,6 @@ export class GameComponent {
     return this.tictactoe.gameIsStarted;
   }
 
-  get countMoves(): number {
-    return this._countMoves;
-  }
 
   constructor(tictactoe:TicTacToeService,private jwtHelper: JwtHelperService) {
     this.tictactoe = tictactoe;
@@ -61,75 +56,31 @@ export class GameComponent {
   ngOnInit() {
     this.newGame();
     this.addStartedGameListener();
+    this.addSyncGameListener()
   }
 
   newGame() {
     this.squares = Array(9).fill(null);
     this.winner = '';
     this.xIsNext = true;
-    this._countMoves = 0;
-  }
-
-  get player() {
-    return this.xIsNext ? 'X' : 'O';
-  }
-
-  makeMove(idx: number) {
-    // if empty or null
-    if (!this.winner && this.youCanMove){
-
-      if (!this.squares[idx]) {
-        this.squares.splice(idx, 1, this.player);
-        this.xIsNext = !this.xIsNext;
-        this._countMoves ++;
-      }
-
-      this.winner = this.calculateWinner();
-    }
-  }
-
-  calculateWinner() {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
-
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (
-        this.squares[a] &&
-        this.squares[a] === this.squares[b] &&
-        this.squares[a] === this.squares[c]
-      ) {
-        return this.squares[a];
-      }
-    }
-    return this._countMoves === 9 ? 'nobody' : null;
+    this.countMoves = 0;
   }
 
   addStartedGameListener(){
     this.tictactoe.hubConnection.on("CurrentGame",({playerX, playerO}) =>{
       this.tictactoe.gameIsStarted = true;
 
-      this.playerO = new Player(playerX.user, playerO.gameName, playerO.minimalGameRating);
       this.playerX = new Player(playerX.user, playerX.gameName, playerX.minimalGameRating);
+      this.playerO = new Player(playerO.user, playerO.gameName, playerO.minimalGameRating);
 
       switch (this.username) {
         case playerX.user:
           this.youCanMove = true;
-          this.yourValue = "X";
           console.log("you - X")
           break;
 
         case playerO.user:
           this.youCanMove = true;
-          this.yourValue = "O";
           console.log("you - O")
           break;
 
@@ -139,6 +90,16 @@ export class GameComponent {
 
       console.log(this.playerX, this.playerO);
     });
+  }
+
+  addSyncGameListener(){
+    this.tictactoe.hubConnection.on("SyncGameState", (game) => {
+      console.log(game);
+
+
+
+
+    })
   }
 
   async leaveGame(){
