@@ -42,6 +42,13 @@ public class GameHub : Hub
             await SyncAllGames(gameConnection.GameName);
             
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameConnection.GameName);
+
+            var isPlayerXO = gameConnection.User == _gamesStates.States[gameConnection.GameName].PlayerX.User ||
+                               gameConnection.User == _gamesStates.States[gameConnection.GameName].PlayerO.User;
+            if (isPlayerXO)
+            {
+                await StopGame(gameConnection);
+            }
         }
         
         await base.OnDisconnectedAsync(exception);

@@ -162,8 +162,5 @@ export class GameComponent {
       user: this.username,
       gameName: this.gameName,
       minimalGameRating: this.minimalGameRating});
-
-    this.tictactoe.gameIsStarted = true;
-    this.tictactoe.gameIsStartedChange.emit(true);
   }
 }
