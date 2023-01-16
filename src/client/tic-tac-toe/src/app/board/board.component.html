@@ -10,7 +10,7 @@
   </h1>
 </div>
 
-<main>
+<main *ngIf="tictactoe.gameIsStarted">
   <app-square
     *ngFor="let val of squares; let i = index"
     [value]="val"

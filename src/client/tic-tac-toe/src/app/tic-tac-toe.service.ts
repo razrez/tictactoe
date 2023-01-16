@@ -1,4 +1,4 @@
-import {Injectable, Input} from '@angular/core';
+import {EventEmitter, Injectable, Input, Output} from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@aspnet/signalr';
 
@@ -18,6 +18,7 @@ export class TicTacToeService {
 
   private _hubConnection!: signalR.HubConnection;
   @Input() gameIsStarted = false;
+  @Output() gameIsStartedChange = new EventEmitter<boolean>();
   @Input() gameIsOpened = false;
 
   public startConnection = () => {

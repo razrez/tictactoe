@@ -75,6 +75,7 @@ export class GameComponent {
     this.newGame();
     this.addStartedGameListener();
     this.addSyncGameListener();
+    this.addStopGameListener();
   }
 
   newGame() {
@@ -87,6 +88,7 @@ export class GameComponent {
   addStartedGameListener(){
     this.tictactoe.hubConnection.on("NewGame",({playerX, playerO}) =>{
       this.tictactoe.gameIsStarted = true;
+      this.tictactoe.gameIsStartedChange.emit(true);
 
       this.playerX = new Player(playerX.user, playerX.gameName, playerX.minimalGameRating);
       this.playerO = new Player(playerO.user, playerO.gameName, playerO.minimalGameRating);
@@ -107,7 +109,6 @@ export class GameComponent {
       }
 
       console.log(this.playerX, this.playerO);
-      //console.log(this.youCanMove);
       this.newGame();
     });
   }
@@ -125,12 +126,34 @@ export class GameComponent {
 
       this.youCanMove = (this.username === this.playerX?.user && this.xIsNext )
         || (this.username === this.playerO?.user && !this.xIsNext);
+
+      if(this.gameIsStarted){
+        this.tictactoe.gameIsStarted = true;
+        this.tictactoe.gameIsStartedChange.emit(true);
+      }
       console.log(game);
     })
+
+  }
+
+  addStopGameListener(){
+    this.tictactoe.hubConnection.on("GameIsStarted", (gameIsStarted) =>  {
+      this.tictactoe.gameIsStarted = gameIsStarted;
+      this.tictactoe.gameIsStartedChange.emit(this.gameIsStarted);
+      //this.newGame();
+    });
   }
 
   async leaveGame(){
     await this.tictactoe.hubConnection.invoke("LeaveGame");
+
+    if (this.username===this.playerX?.user || this.username===this.playerO?.user){
+      await this.tictactoe.hubConnection.invoke("StopGame",{
+        user: this.username,
+        gameName: this.gameName,
+        minimalGameRating: this.minimalGameRating});
+    }
+
     window.location.reload();
   }
 
@@ -139,5 +162,8 @@ export class GameComponent {
       user: this.username,
       gameName: this.gameName,
       minimalGameRating: this.minimalGameRating});
+
+    this.tictactoe.gameIsStarted = true;
+    this.tictactoe.gameIsStartedChange.emit(true);
   }
 }

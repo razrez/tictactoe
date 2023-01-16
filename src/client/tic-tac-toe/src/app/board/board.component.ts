@@ -55,11 +55,11 @@ export class BoardComponent {
       minimalGameRating: this.playerX?.minimalGameRating
     });
 
-    this.tictactoe.hubConnection.invoke("RefreshRating", {
+    /*this.tictactoe.hubConnection.invoke("RefreshRating", {
       winner: this.winner,
       gameName: this.playerX?.gameName
-    });
-    
+    });*/
+
   }
 
   async makeMove(idx: number) {

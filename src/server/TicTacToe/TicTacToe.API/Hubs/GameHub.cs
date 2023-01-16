@@ -54,8 +54,7 @@ public class GameHub : Hub
         if (_gameConnections.TryGetValue(Context.ConnectionId, out var gameConnection))
         {
             _gameConnections.Remove(Context.ConnectionId);
-            
-            //real-time message from bot
+
             await Clients
                 .Group(gameConnection.GameName)
                 .SendAsync("ConnectInfo", "Bot", $"{gameConnection.User} left :(");
@@ -124,10 +123,20 @@ public class GameHub : Hub
                 });
 
             _gamesStates.States[playerX.GameName] = game;
-            //_gamesStates.Add(playerX.GameName, game);
+            /*await Clients
+                .Group(playerX.GameName)
+                .SendAsync("SyncGameState", _gamesStates.States[playerX.GameName]);*/
        }
 
        await Task.CompletedTask;
+    }
+
+    public async Task StopGame(GameConnection playerXO)
+    {
+        _gamesStates.States.TryRemove(playerXO.GameName, out var game);
+        await Clients
+            .Group(playerXO.GameName)
+            .SendAsync("GameIsStarted", false );
     }
 
     public async Task MakeMove(Game gameState)
