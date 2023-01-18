@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using TicTacToe.API.Hubs;
 using TicTacToe.AppCore.Common;
-using TicTacToe.AppCore.Common.DTO;
+using TicTacToe.AppCore.Common.GameModels;
 using TicTacToe.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);

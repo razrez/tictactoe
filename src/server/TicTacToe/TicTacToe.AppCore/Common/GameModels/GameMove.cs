@@ -1,4 +1,4 @@
-namespace TicTacToe.AppCore.Common.DTO;
+namespace TicTacToe.AppCore.Common.GameModels;
 
 public class GameMove
 {

@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.AppCore.Common;
-using TicTacToe.AppCore.Common.DTO;
+using TicTacToe.AppCore.Common.GameModels;
 using TicTacToe.Infrastructure.Services;
 
 namespace TicTacToe.API.Hubs;
@@ -130,9 +130,6 @@ public class GameHub : Hub
                 });
 
             _gamesStates.States[playerX.GameName] = game;
-            /*await Clients
-                .Group(playerX.GameName)
-                .SendAsync("SyncGameState", _gamesStates.States[playerX.GameName]);*/
        }
 
        await Task.CompletedTask;
@@ -180,13 +177,24 @@ public class GameHub : Hub
         }
     }
 
-    public Task SendConnectedPlayers(string gameName)
+    public async Task SendConnectedPlayers(string gameName)
     {
         var players = _gameConnections.Values
             .Where(g => g.GameName == gameName)
             .Select(s => s.User);
         
-        return Clients.Group(gameName).SendAsync("GetConnectedPlayers", players);
+        await Clients.Group(gameName).SendAsync("GetConnectedPlayers", players);
+    }
+    
+    public async Task SendConnectedPlayersInfo(string gameName)
+    {
+        var players = _gameConnections.Values
+            .Where(g => g.GameName == gameName)
+            .Select(s => s.User);
+        
+        await Clients.Group(gameName).SendAsync("GetConnectedPlayersInfo", players);
+
+        var stats = await _gameService.GetStatisticsByPlayers(players.ToList());
     }
     
 }

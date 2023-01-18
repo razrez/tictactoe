@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using TicTacToe.AppCore.Common.GameModels;
 using TicTacToe.Domain.Entities;
 
 namespace TicTacToe.Infrastructure.Persistence;
@@ -8,6 +9,7 @@ namespace TicTacToe.Infrastructure.Persistence;
 public sealed class ApplicationDbContext : IdentityDbContext<User>
 {
     public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<GameResult> GameResults { get; set; } = null!;
     
     public ApplicationDbContext(){}
     

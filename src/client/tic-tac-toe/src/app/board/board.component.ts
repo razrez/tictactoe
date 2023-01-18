@@ -30,6 +30,10 @@ export class BoardComponent {
     return this.xIsNext ? 'X' : 'O';
   }
 
+  get loser(){
+    return this.winner === this.playerX?.user ? this.playerO?.user : this.playerX?.user
+  }
+
   currentPlayerName(){
     return this.xIsNext ? this.playerX?.user : this.playerO?.user;
   }
@@ -55,11 +59,6 @@ export class BoardComponent {
       minimalGameRating: this.playerX?.minimalGameRating
     });
 
-    /*this.tictactoe.hubConnection.invoke("RefreshRating", {
-      winner: this.winner,
-      gameName: this.playerX?.gameName
-    });*/
-
   }
 
   async makeMove(idx: number) {
@@ -78,6 +77,20 @@ export class BoardComponent {
       await this.tictactoe.hubConnection.invoke("MakeMove",
         new Game(this.playerX, this.playerO, this.squares, this.xIsNext, this.winner, this.countMoves
       ));
+    }
+
+    if (this.winner){
+      /*this.tictactoe.hubConnection.invoke("RefreshRating", {
+        winnerName: this.winner,
+        loserName: this.loser,
+        gameName: this.playerX?.gameName
+      });*/
+
+      console.log({
+        winnerName: this.winner,
+        loserName: this.loser,
+        gameName: this.playerX?.gameName
+      });
     }
 
   }

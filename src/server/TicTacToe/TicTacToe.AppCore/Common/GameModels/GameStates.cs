@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using TicTacToe.AppCore.Common.DTO;
 
-namespace TicTacToe.AppCore.Common;
+namespace TicTacToe.AppCore.Common.GameModels;
 
 public class GameStates
 {
