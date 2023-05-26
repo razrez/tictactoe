@@ -1,16 +1,29 @@
-<div class="gameIsNotOpened" *ngIf="!gameIsOpened">
-  <h1>Доступные игры</h1>
-  <input class="form-control" gameName="gameName" [(ngModel)]="gameName" placeholder="game name"/>
-  <input type="number" class="form-control" minimalGameRating="minimalGameRating" [(ngModel)]="minimalGameRating" placeholder="raiting"/>
-  <button [disabled]="!gameName || !(minimalGameRating > 3)" (click)="addGame()">create</button>
+<h1 class="align-center" >Available Games</h1>
+<div class="container align-center" style="max-width: 30%" *ngIf="!gameIsOpened">
+  <small>wanna create own game?</small>
+  <div class="form-group" style="justify-content: center" >
 
-  <div class="games-container">
+    <input class="form-control" gameName="gameName" [(ngModel)]="gameName" placeholder="game name"/>
+    <input type="number" class="form-control" minimalGameRating="minimalGameRating" [(ngModel)]="minimalGameRating" placeholder="raiting"/>
+    <button class="btn btn-outline-dark" style="margin-bottom: 20px; margin-top: 10px" [disabled]="!gameName || !(minimalGameRating > 3)" (click)="addGame()">create</button>
+  </div>
+
+  <div class="games-container overflow-y" style="height: 30%">
     <form class="form-singin" #joinForm="ngForm" *ngFor="let game of games; let i = index" (click)="joinGame(game.gameName, game.minimalGameRating)">
-      <div *ngFor="let game of games; let i = index" class="container-fluid" style="display: flex; flex-direction: row;">
-        <h4 style="margin-left: 10px; font-weight: bold; color: #0fb763">{{game.gameName}}</h4>
-        <h4 style="margin-left: 10px;">Raiting:{{game.minimalGameRating}}</h4>
-        <button style="margin: 10px" type="submit">Join</button>
-      </div>
+      <ul *ngFor="let game of games; let i = index" class="list-group list-group-light" >
+
+        <li class="list-group-item d-flex justify-content-between align-items-center overflow">
+          <div>
+            <div class="fw-bold">name: {{game.gameName}}</div>
+            <div class="text-muted">rating: {{game.minimalGameRating}}</div>
+          </div>
+          <span class="badge rounded-pill bg-dark">
+            <button class="btn-outline-dark btn" type="submit">Join</button>
+          </span>
+        </li>
+
+
+      </ul>
     </form>
   </div>
 

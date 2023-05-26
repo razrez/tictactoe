@@ -1,13 +1,20 @@
-<form class="form-singin" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
-  <div class="container-fluid">
-    <h2 class="form-singin-heading">Log in</h2>
+<h1 class="align-center" style="padding-bottom: 10%">TicTacToe</h1>
+<div class="container align-center" style="max-width: 30%">
+
+  <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
     <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password</div>
-
-    <input type="email" id="username" name="username"
-           ngModel class="form-control" required placeholder="username" autofocus>
-    <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
-    <button type="submit">log in</button>
-  </div>
-</form>
-
-<h2><a routerLink="/signup">or you can create account</a></h2>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="email" id="username" name="username"
+             ngModel class="form-control" required placeholder="username" autofocus>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
+    </div>
+    <div class="form-group">
+      <a routerLink="/signup">create account</a>
+    </div>
+    <button type="submit" class="btn btn-outline-dark">Log In</button>
+  </form>
+</div>

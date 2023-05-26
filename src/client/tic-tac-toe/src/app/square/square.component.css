@@ -3,10 +3,10 @@ button {
   height: 100%;
   font-size: 5em !important;
   border-radius: 20px;
-  background-color: rgba(38, 9, 9, 0.96);
+  background-color: rgb(0, 0, 0);
   transition-duration: 1s;
-  color: #b90a0a;
-  text-shadow: #790d10 5px 3px 3px;
+  color: #ffffff;
+  text-shadow: rgb(255, 8, 8) ;
   font-family: "Bradley Hand ITC", ui-serif;
   font-weight: bolder;
   box-shadow: rgba(33, 24, 24, 0.48) 2px 3px 2px 2px;

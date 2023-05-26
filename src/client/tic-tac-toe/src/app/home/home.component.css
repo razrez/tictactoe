@@ -1,0 +1,37 @@
+h1{
+  color: black;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+button{
+  text-align: center;
+  align-items: center;
+}
+
+.btn-games {
+  font-family: Monospaced, sans-serif;
+  font-size: 23px;
+  color: rgb(2, 2, 2);
+  letter-spacing: 3px;
+  line-height: 25px;
+  padding-inline: 3px;
+  border: 1px solid rgb(2, 2, 2);
+  border-radius: 40px;
+  background: transparent;
+  transition: all 0.3s ease 0s;
+}
+
+.btn-games:hover {
+  color: white;
+  background: rgb(2, 2, 2);
+  border: 1px solid rgb(2, 2, 2);
+}
+
+.btn-logout{
+  font-family: Monospaced, sans-serif;
+  font-size: 23px;
+}

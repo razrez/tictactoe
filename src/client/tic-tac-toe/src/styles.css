@@ -1,5 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
-body {
-  background: #4f4e4d;
+@import "~bootstrap/dist/css/bootstrap.css";
+
+.align-center{
+  text-align: center;
+  vertical-align: center!important;
 }
 
+a {
+  text-decoration: none!important;
+}
+
+.max-width30{
+  max-width: 30%;
+}
+
+.games-container{
+  margin-top: 10px;
+  max-height: fit-content;
+}
+
+.overflow-y{
+  padding-inline: 10px;
+  align-self: flex-end;
+  justify-content: flex-end;
+  position: absolute;
+  height: 50%;
+  width: 29%;
+  overflow-y: auto;
+}

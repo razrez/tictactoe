@@ -23,7 +23,7 @@ public class GameService
         return game;
     }
 
-    public async Task RefreshRating(GameResult gameResult)
+    /*public async Task RefreshRating(GameResult gameResult)
     {
         var loserUser = await _userManager.FindByNameAsync(gameResult.LoserName);
         var winnerUser = await _userManager.FindByNameAsync(gameResult.WinnerName);
@@ -33,7 +33,7 @@ public class GameService
 
         await _userManager.UpdateAsync(loserUser);
         await _userManager.UpdateAsync(winnerUser);
-    }
+    }*/
 
     public async Task<List<PlayerStatistic>> GetStatisticsByPlayers(List<string> playerNames)
     {

@@ -1,11 +1,15 @@
 
-<div *ngIf="isUserAuthenticated" style="text-align: center; color:red; padding-bottom: 10%">
+<div *ngIf="isUserAuthenticated" style="text-align: center; padding-bottom: 10%">
   <h1>Home Page</h1>
-  <h3>you are logged in</h3>
 </div>
 
-<div style="text-align: center; padding-bottom: 10%">
-  <h2><a routerLink="/games">available games</a></h2>
-  <button *ngIf="isUserAuthenticated"><a class="logout" (click)="logOut()">Log out</a></button>
+<div class="container align-center" style="max-width: 30%">
+  <div class="row align-items-center">
+    <button class="btn-games" routerLink="/games">available games</button>
+  </div>
+
+  <div style="margin-top: 10%" class="row align-items-end">
+    <button class="btn btn-outline-dark btn-logout " *ngIf="isUserAuthenticated" (click)="logOut()">Log out</button>
+  </div>
 </div>
 
