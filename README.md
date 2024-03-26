@@ -1,8 +1,8 @@
 # TicTacToe
-## Realtime tictactoe game with muliple rooms
+## Realtime tictactoe game with multiple rooms
 - SignalR (websockets)
 - JWT authintication
-- muliple rooms
+- multiple rooms
 - restart game feature
 - every connected user can spectate the game
 
